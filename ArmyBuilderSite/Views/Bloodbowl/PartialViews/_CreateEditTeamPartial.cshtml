@@ -1,0 +1,39 @@
+﻿@model ArmyBuilderSite.Models.ViewModels.Bloodbowl.CreateEditTeamModalVM
+<form id="createEditTeamForm">
+    @Html.AntiForgeryToken()
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm">
+                <label for="createEditTeamName" class="form-label col-form-label-lg">Team Name</label>
+                <input type="text" class="form-control" id="inputCreateEditTeamName" data-input="createEdit" aria-describedby="teamNameHelp" name="teamName">
+                <span id="inputCreateEditTeamNameValidate" class="text-danger">The team must have a name.</span>
+            </div>
+            <div class="col-sm">
+                <label for="createEditManagerName" class="form-label col-form-label-lg">Manager Name</label>
+                <input type="text" class="form-control" id="inputCreateEditManagerName" data-input="createEdit" name="managerName">
+                <span id="inputCreateEditManagerNameValidate" class="text-danger">The team manager must have a name.</span>
+            </div>
+        </div>
+        @if (Model.Races.Any())
+        {
+            <div class="row">
+                <div class="col-sm">
+                    <label class="form-label col-form-label-lg" for="teamRace">Race</label>
+                    <select class="form-select form-select-lg" id="raceSelectInput" name="teamRace" asp-items="Model.Races"></select>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <hr style="margin:20px" />
+            <div class="col-sm"></div>
+            <div class="col-sm">
+                <div class="form-check form-switch">
+                    <input class="form-check-input " type="checkbox" id="publicTeamCheck">
+                    <label class="form-check-label" for="publicTeamCheck">Do you want this team to be visible to other managers?</label>
+                </div>
+            </div>
+            <div class="col-sm">
+            </div>
+        </div>
+    </div>
+</form>

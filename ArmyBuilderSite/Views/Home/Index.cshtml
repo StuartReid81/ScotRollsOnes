@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    @if (!SignInManager.IsSignedIn(User))
+    {
+        <h1>Please log in to your account to continue.</h1>
+
+    }
+    else
+    {
+        <div class="row">
+            <div class="card col-lg-3 col-sm-12" style="margin-top:3%">
+                <div style="margin:5px"><a href="../../bloodbowl/home"><img class="card-img-top zoom" src="~/Images/cad05ec009cb2fae8f3fc1571a84c3f0.jpg" /></a></div>
+                <div class="card-body">
+                    <h5 class="card-title">Blood Bowl Manager</h5>
+                    <p class="card-text">Click the image above to manage your team rosters.</p>
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="card col-lg-3 col-sm-12" style="margin-top:3%">
+                <div style="margin:5px"><a href="../../dragonrampant/home"><img class="card-img-top zoom" src="~/Images/rampant.jpg" /></a></div>
+                <div class="card-body">
+                    <h5 class="card-title">Dragon Rampant Manager</h5>
+                    <p class="card-text">Click the image above to manage your army.</p>
+                </div>
+            </div>
+            <div class="col-1"></div>
+            <div class="card col-lg-3 col-sm-12" style="margin-top:3%">
+                <div style="margin:5px"><a href="../../stargrave/home"><img class="card-img-top zoom" src="~/Images/Stargrave_Wide.png" /></a></div>
+                <div class="card-body">
+                    <h5 class="card-title">Stargrave Manager</h5>
+                    <p class="card-text">Click the image above to manage your crew.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>

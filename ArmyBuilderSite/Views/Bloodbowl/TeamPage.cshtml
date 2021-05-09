@@ -1,0 +1,23 @@
+﻿@model ArmyBuilderSite.Models.ViewModels.Bloodbowl.ViewTeamVM
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <h1>There was a problem loading this team.</h1>
+    <h2 class="text-info">Error: @Model.Error</h2>
+}
+else
+{
+    <div>
+        <h1>@Model.Team.TeamName</h1>
+    </div>
+    <button id="clickMe">Click Me</button>
+}
+
+<script>
+    $(document).ready(function () {
+        $("#clickMe").click(function () {
+            // Display an info toast with no title
+            toastr.info('Are you the 6 fingered man?');
+        });
+    });
+</script>

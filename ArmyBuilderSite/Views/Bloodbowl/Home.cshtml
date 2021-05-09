@@ -1,0 +1,158 @@
+﻿@model ArmyBuilderSite.Models.ViewModels.Bloodbowl.BBUserHomeVM
+<div>
+    <img class="img-fluid rounded mx-auto d-block" src="/Images/cad05ec009cb2fae8f3fc1571a84c3f0.jpg" alt="Blood Bowl Logo" />
+</div>
+<div>
+    <h1 class="text-center">Team Manager</h1>
+    <button class="btn btn-lg btn-dark" id="addTeamBtn" data-bs-toggle="modal" data-bs-target="#createEditTeamModal">Add New Team</button>
+    <hr />
+    <table id="teamsTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Team Name</th>
+                <th>Manager Name</th>
+                <th>Race</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <form id="softDeleteTeam">
+        @Html.AntiForgeryToken()
+    </form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createEditTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createEditTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createEditTeamModalLabel">@Model.ModalVM.Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="../../Views/BloodBowl/PartialViews/_CreateEditTeamPartial.cshtml" model="Model.ModalVM" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeCeateEditModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="createEditSubmitBtn" disabled>@Model.ModalVM.ButtonText</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let defaultRace = $('#raceSelectInput').val();
+
+    var tt = $('#teamsTable').DataTable({
+        paging: false,
+        "language": {
+            "emptyTable": "You currently have no active teams."
+        },
+        ajax: {
+            url: '../../Bloodbowl/UserTeams/Data',
+            DataSrc: 'data'
+        },
+        columns: [
+            {
+                "data": null,
+                "defaultContent": '',
+                "render": (d) => {
+                    return `<a href="../../Bloodbowl/Team/View/${d.id}">${d.teamName}</a>`;
+                }
+            },
+            { data: 'managerName' },
+            { data: 'race' },
+            {
+                "data": null,
+                defaultContent: '',
+                "orderable": false,
+                "render": (d) => {
+                    return `<button class="btn btn-sm" data-delete-team="${d.id}" data-delete-team-name="${d.teamName}"><i class="fas fa-trash-alt"></i> Delete Team</button>`;
+                }
+            }
+        ]
+    });
+
+    $(document).ready(function () {
+        $("#inputCreateEditTeamNameValidate").hide();
+        $("#inputCreateEditManagerNameValidate").hide();
+
+        //on click
+        $("[data-input='createEdit']").change(CheckValidInput);
+
+        $('#teamsTable tbody').on('click', '[data-delete-team]', function () {
+            if (confirm(`Are you sure you want to delete the following team? : ${$(this).data("delete-team-name")}`)) {
+                data = {
+                    teamId: $(this).data("delete-team"),
+                    __RequestVerificationToken: $('#softDeleteTeam input[name=__RequestVerificationToken]').val()
+                };
+                $.post("../../bloodbowl/dosoftdeleteteam", data, function (d) {
+                    if (d.success) {
+                        toastr.success("Team Deleted.");
+                        tt.ajax.reload();
+                    } else {
+                        toastr.error(d.error);
+                    }
+                });
+            }
+        });
+
+        $("#raceSelectInput").change(function () { CheckValidInput });
+
+        $("#createEditSubmitBtn").click("click", DoSubmitCreateEdit);
+    });
+
+    function CheckValidInput() {
+        let di = $("[data-input='createEdit']");
+        let emptyCount = 0;
+        for (var i = 0; i < di.length; i++) {
+            if (di[i].value == "") {
+                emptyCount++;
+                $(`#${di[i].id}Validate`).show();
+            } else {
+                $(`#${di[i].id}Validate`).hide();
+            }
+        }
+
+        if (emptyCount > 0) {
+            $("#createEditSubmitBtn").attr("disabled", true);
+        } else {
+            $("#createEditSubmitBtn").attr("disabled", false);
+        }
+    }
+
+    function DoSubmitCreateEdit() {
+        let URL = '@Model.ModalVM.URL';
+
+        let data = {
+            teamName: $("#inputCreateEditTeamName").val(),
+            managerName: $("#inputCreateEditManagerName").val(),
+            race: $('#raceSelectInput').val(),
+            public: $('#publicTeamCheck').prop('checked'),
+            __RequestVerificationToken: $('#createEditTeamForm input[name=__RequestVerificationToken]').val()
+        }
+
+        $.post(URL, data, function(d) {
+            if (d.success) {
+                $("#closeCeateEditModalBtn").trigger("click");
+                toastr.success("Team Created.");
+                ResetCreateTeamModal();
+                tt.ajax.reload();
+            } else {
+                toastr.error(d.error);
+                console.log(d.ex);
+            }
+        });
+    }
+
+    function ResetCreateTeamModal() {
+        $("#inputCreateEditTeamName").val("");
+        $("#inputCreateEditManagerName").val("");
+        $('#raceSelectInput').val(defaultRace);
+        $('#publicTeamCheck').prop('checked', false);
+        $("#createEditSubmitBtn").attr("disabled", true);
+    }
+
+</script>
