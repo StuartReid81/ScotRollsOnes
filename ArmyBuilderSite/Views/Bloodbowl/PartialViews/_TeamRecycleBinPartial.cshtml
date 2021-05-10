@@ -7,15 +7,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <table id="teamRecycleBinTable" class="display" style="width:100%">
+                <table id="teamRecycleBinTable" class="display responsive" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Team Name</th>
+                            <th data-priority="1">Team Name</th>
                             <th>Manager Name</th>
                             <th>Race</th>
                             <th>Date Deleted</th>
-                            <th></th>
-                            <th></th>
+                            <th data-priority="2"></th>
+                            <th data-priority="2"></th>
                         </tr>
                     </thead>
                 </table>
@@ -27,12 +27,24 @@
         </div>
     </div>
 </div>
+<form id="restoreTeamForm">
+    @Html.AntiForgeryToken()
+</form>
+<form id="hardDeleteTeamForm">
+    @Html.AntiForgeryToken()
+</form>
+<form id="hardDeleteAllMyTeamsForm">
+    @Html.AntiForgeryToken()
+</form>
 
 <script>
     var recycleBinTable = $("#teamRecycleBinTable").DataTable({
         paging: false,
         "language": {
             "emptyTable": "You currently have no deleted teams."
+        },
+        responsive: {
+            details: false
         },
         ajax: {
             url: '../../Bloodbowl/UserTeams/Deleted/Data',
@@ -69,8 +81,58 @@
     });
 
     $(document).ready(function () {
-        $("#recycleTeamModal").on('shown.bs.modal', function () {
-            recycleBinTable.ajax.reload();
+        $('#teamRecycleBinTable tbody').on('click', '[data-restore-team]', function () {
+            data = {
+                teamId: $(this).data("restore-team"),
+                __RequestVerificationToken: $('#restoreTeamForm input[name=__RequestVerificationToken]').val()
+            };
+            $.post("../../bloodbowl/dorestoreteam", data, function (d) {
+                if (d.success) {
+                    toastr.success("Team Restored.");
+                    tt.ajax.reload();
+                    recycleBinTable.ajax.reload();
+                    $("#recycleTeamModal").modal("hide");
+                } else {
+                    toastr.error(d.error);
+                }
+            });
+        });
+
+        $('#teamRecycleBinTable tbody').on('click', '[data-hard-delete-team]', function () {
+            if (confirm(`Ayre you sure you want to permanantly delete: ${$(this).data("hard-delete-team-name")}`)) {
+                data = {
+                    teamId: $(this).data("hard-delete-team"),
+                    __RequestVerificationToken: $('#hardDeleteTeamForm input[name=__RequestVerificationToken]').val()
+                };
+                $.post("../../bloodbowl/doharddeleteteam", data, function (d) {
+                    if (d.success) {
+                        toastr.success("Team emptied from recycle bin.");
+                        tt.ajax.reload();
+                        recycleBinTable.ajax.reload();
+                        $("#recycleTeamModal").modal("hide");
+                    } else {
+                        toastr.error(d.error);
+                    }
+                });
+            }
+        });
+
+        $('#emptyAllTeamBinBtn').on("click", function () {
+            if (confirm(`Ayre you sure you want to permanantly delete all the teams in your recycle bin?}`)) {
+                data = {
+                    __RequestVerificationToken: $('#hardDeleteAllMyTeamsForm input[name=__RequestVerificationToken]').val()
+                };
+                $.post("../../bloodbowl/doharddeleteallteams", data, function (d) {
+                    if (d.success) {
+                        toastr.success("Teams emptied from recycle bin.");
+                        tt.ajax.reload();
+                        recycleBinTable.ajax.reload();
+                        $("#recycleTeamModal").modal("hide");
+                    } else {
+                        toastr.error(d.error);
+                    }
+                });
+            }
         });
     });
 

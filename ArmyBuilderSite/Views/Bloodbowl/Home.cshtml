@@ -94,6 +94,7 @@
                     if (d.success) {
                         toastr.success("Team Deleted.");
                         tt.ajax.reload();
+                        recycleBinTable.ajax.reload();
                     } else {
                         toastr.error(d.error);
                     }

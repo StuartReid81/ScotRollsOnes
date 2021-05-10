@@ -141,6 +141,98 @@ namespace ArmyBuilderSite.Controllers
                 return Json(new { Success = false, Error = "Unable to update the database." });
             }
         }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult DoRestoreTeam(DoDeleteTeamDTO dto)
+        {
+            var team = _db.Teams.Where(x => x.Id == dto.TeamId).FirstOrDefault();
+
+            if (team == null)
+            {
+                return Json(new { Success = false, Error = "Unable to find this team on the database." });
+            }
+
+            if (team.UserName != User.Identity.Name)
+            {
+                return Json(new { Success = false, Error = "This team does not belong to you." });
+            }
+
+            if (!team.IsSoftDeleted)
+            {
+                return Json(new { Success = false, Error = "This team is already active." });
+            }
+
+            team.IsSoftDeleted = false;
+
+            try
+            {
+                _db.Update(team);
+                _db.SaveChanges();
+                return Json(new { Success = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { Success = false, Error = "Unable to update the database." });
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult DoHardDeleteTeam(DoDeleteTeamDTO dto)
+        {
+            var team = _db.Teams.Where(x => x.Id == dto.TeamId).FirstOrDefault();
+
+            if (team == null)
+            {
+                return Json(new { Success = false, Error = "Unable to find this team on the database." });
+            }
+
+            if (team.UserName != User.Identity.Name)
+            {
+                return Json(new { Success = false, Error = "This team does not belong to you." });
+            }
+
+            if (!team.IsSoftDeleted)
+            {
+                return Json(new { Success = false, Error = "This team is not currently in the recycle bin." });
+            }
+
+            try
+            {
+                _db.Remove(team);
+                _db.SaveChanges();
+                return Json(new { Success = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { Success = false, Error = "Unable to update the database." });
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult DoHardDeleteAllTeams()
+        {
+            var teams = _db.Teams.Where(x => x.UserName == User.Identity.Name && x.IsSoftDeleted ).ToList();
+
+            if (teams == null)
+            {
+                return Json(new { Success = false, Error = "Unable to find any teams on the database." });
+            }
+
+            try
+            {
+                _db.RemoveRange(teams);
+                _db.SaveChanges();
+                return Json(new { Success = true });
+            }
+            catch (Exception)
+            {
+                return Json(new { Success = false, Error = "Unable to update the database." });
+            }
+        }
+
         #endregion
 
         #region Get Methods
