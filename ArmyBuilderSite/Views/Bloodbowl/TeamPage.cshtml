@@ -1,4 +1,9 @@
 ﻿@model ArmyBuilderSite.Models.ViewModels.Bloodbowl.ViewTeamVM
+@using ArmyBuilderSite.Services.Helpers
+
+@{
+    var Team = Model.Team;
+}
 
 @if (!string.IsNullOrWhiteSpace(Model.Error))
 {
@@ -7,17 +12,88 @@
 }
 else
 {
-    <div>
-        <h1>@Model.Team.TeamName</h1>
+    <div class="container">
+        <div class="text-center">
+            <h1 class="team-name">@Team.TeamName</h1>
+            <h4>Current Treasury: @Team.Gold.ToString("N0")</h4>
+            <hr />
+        </div>
+        <div class="row text-center">
+            @if (Team.BeingCreated)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <h4><span class="badge bg-dark">Team Being Created</span></h4>
+                </div>
+            }
+            @if (Team.IsPublic)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <h4><span class="badge bg-success">Public Team</span></h4>
+                </div>
+            }
+            @if (Team.IsSoftDeleted)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <h4><span class="badge bg-danger">Team In Recycle Bin</span></h4>
+                </div>
+            }
+            <hr style="margin-top:1%" />
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+                <h5>Manager Name:</h5>
+                <p>@Team.ManagerName</p>
+            </div>
+            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+                <h5>Race:</h5>
+                <p>@Team.RaceName</p>
+            </div>
+            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+                <h5>Date Created:</h5>
+                <p>@Team.DateCreated.ToSimpleDateString()</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+                <h5>User Name:</h5>
+                <p>@Team.UserName</p>
+            </div>
+            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+                <h5>Number of Players:</h5>
+                <p>@Team.ActivePlayers active / @Team.TotalPlayers total</p>
+            </div>
+            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+                <h5>Date Created:</h5>
+                <p>@Team.DateCreated.ToSimpleDateString()</p>
+            </div>
+        </div>
+        <hr />
+        <div class="text-center">
+            <h3 class="team-roster">Player Roster</h3>
+        </div>
+        <div>
+            <table id="teamRosterTable" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Pos</th>
+                        <th>M</th>
+                        <th>S</th>
+                        <th>A</th>
+                        <th>Av</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <button id="clickMe">Click Me</button>
 }
 
 <script>
+    var rosterTable = $("#teamRosterTable").DataTable({ paging: false, "bFilter": false });
     $(document).ready(function () {
-        $("#clickMe").click(function () {
-            // Display an info toast with no title
-            toastr.info('Are you the 6 fingered man?');
-        });
+
     });
 </script>

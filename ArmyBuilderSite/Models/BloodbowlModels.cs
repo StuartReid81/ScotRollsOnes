@@ -66,7 +66,11 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public DateTimeOffset DateSoftDeleted { get; set; }
 
+        public DateTimeOffset DateCreated { get; set; }
+
         public bool IsPublic { get; set; }
+
+        public bool BeingCreated { get; set; }
     }
     public class Race
     {

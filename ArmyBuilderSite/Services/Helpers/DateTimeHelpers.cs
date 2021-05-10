@@ -11,5 +11,10 @@ namespace ArmyBuilderSite.Services.Helpers
         {
             return d.ToString("dd/MM/yyyy HH:mm:ss");
         }
+
+        public static string ToSimpleDateString(this DateTimeOffset d)
+        {
+            return d.ToString("dd/MM/yyyy");
+        }
     }
 }

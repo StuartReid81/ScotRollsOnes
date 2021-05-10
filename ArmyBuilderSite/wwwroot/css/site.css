@@ -21,6 +21,16 @@ body > header > div > div > ul > li > form > button {
     font-family: 'Amatic SC', cursive;
 }
 
+.team-name {
+    font-family: 'Tangerine', cursive;
+    font-size:6rem;
+}
+
+.team-roster {
+    font-family: 'Tangerine', cursive;
+    font-size:3rem;
+}
+
 /* Provide sufficient contrast against white background */
 a {
     color: #0366d6;

@@ -39,7 +39,7 @@ namespace ArmyBuilderSite.Controllers
         [HttpGet]
         [Route("/Bloodbowl/Team/View/{id}")]
         public IActionResult TeamPage(int id) {
-            var team = _db.Teams.Where(x => x.Id == id).FirstOrDefault();
+            var team = _db.Teams.Where(x => x.Id == id).Include(x => x.Race).Include(x => x.TeamRoster).FirstOrDefault();
 
             var error = "";
 
@@ -55,7 +55,35 @@ namespace ArmyBuilderSite.Controllers
                 }
             }
 
-            var teamVM = new ViewTeamVM() { Error = error, Team = team };
+            var teamVM = new ViewTeamVM() { Error = error, Team = new ViewTeamDataVM() {
+                TeamName = team.TeamName, // in
+                ManagerName = team.ManagerName, // in
+                Gold = team.Gold, // in
+                ActivePlayers = team.TeamRoster.Where(x => x.IsActive).Count(), //in
+                TotalPlayers = team.TeamRoster.Count(), //in
+                Apothecaries = team.Apothecaries,
+                AssistantCoaches = team.AssistantCoaches,
+                BeingCreated = team.BeingCreated, //in
+                CasualtiesInflicted = team.CasualtiesInflicted, 
+                Cheerleaders = team.Cheerleaders,
+                CurrentTeamRoster = team.TeamRoster,
+                DateCreated = team.DateCreated, //in
+                DateSoftDeleted = team.DateSoftDeleted,
+                Draws = team.Draws,
+                FanFactor = team.FanFactor,
+                Id = team.Id,
+                IsPublic = team.IsPublic, //in
+                IsSoftDeleted = team.IsSoftDeleted, //in
+                League = team.League,
+                LeaguePoints = team.LeaguePoints,
+                Losses = team.Losses,
+                RaceName = team.Race.RaceName, //in
+                ReRolls = team.ReRolls,
+                TotalGamesPlayed = team.TotalGamesPlayed,
+                TouchDowns = team.TouchDowns,
+                UserName = team.UserName, //in
+                Wins = team.Wins
+            } };
 
             return View("TeamPage", teamVM);
         }
@@ -97,7 +125,9 @@ namespace ArmyBuilderSite.Controllers
                 Gold = 1000000,
                 IsSoftDeleted = false,
                 UserId = user.Id,
-                UserName = user.UserName
+                UserName = user.UserName,
+                DateCreated = DateTimeOffset.Now,
+                BeingCreated = true
             };
 
             try

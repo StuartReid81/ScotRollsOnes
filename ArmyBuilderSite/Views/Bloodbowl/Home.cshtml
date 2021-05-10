@@ -81,6 +81,11 @@
         $("#inputCreateEditTeamNameValidate").hide();
         $("#inputCreateEditManagerNameValidate").hide();
 
+        $('#recycleTeamModal').on('shown.bs.modal', function () {
+            var table = $('#teamRecycleBinTable').DataTable();
+            table.columns.adjust();
+        });
+
         //on click
         $("[data-input='createEdit']").change(CheckValidInput);
 
