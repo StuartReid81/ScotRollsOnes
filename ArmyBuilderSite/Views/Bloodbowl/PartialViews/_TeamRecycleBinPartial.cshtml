@@ -1,0 +1,77 @@
+﻿<!-- Recycle Bin Modal -->
+<div class="modal fade" id="recycleTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="recycleTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="recycleTeamModalLabel">Team Recycle Bin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table id="teamRecycleBinTable" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Team Name</th>
+                            <th>Manager Name</th>
+                            <th>Race</th>
+                            <th>Date Deleted</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeRecycleTeamModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-dark" id="emptyAllTeamBinBtn"><i class="fas fa-trash"></i> Empty All</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var recycleBinTable = $("#teamRecycleBinTable").DataTable({
+        paging: false,
+        "language": {
+            "emptyTable": "You currently have no deleted teams."
+        },
+        ajax: {
+            url: '../../Bloodbowl/UserTeams/Deleted/Data',
+            DataSrc: 'data'
+        },
+        columns: [
+            {
+                "data": null,
+                "defaultContent": '',
+                "render": (d) => {
+                    return `<a href="../../Bloodbowl/Team/View/${d.id}">${d.teamName}</a>`;
+                }
+            },
+            { data: 'managerName' },
+            { data: 'race' },
+            { data: 'dateDeleted' },
+            {
+                "data": null,
+                defaultContent: '',
+                "orderable": false,
+                "render": (d) => {
+                    return `<button class="btn btn-sm" data-restore-team="${d.id}" data-restore-team-name="${d.teamName}"><i class="fas fa-trash-restore"></i> Restore Team</button>`;
+                }
+            },
+            {
+                "data": null,
+                defaultContent: '',
+                "orderable": false,
+                "render": (d) => {
+                    return `<button class="btn btn-sm" data-hard-delete-team="${d.id}" data-hard-delete-team-name="${d.teamName}"><i class="fas fa-trash"></i> Empty From Bin</button>`;
+                }
+            }
+        ]
+    });
+
+    $(document).ready(function () {
+        $("#recycleTeamModal").on('shown.bs.modal', function () {
+            recycleBinTable.ajax.reload();
+        });
+    });
+
+</script>

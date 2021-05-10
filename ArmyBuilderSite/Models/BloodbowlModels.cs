@@ -64,6 +64,8 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public bool IsSoftDeleted { get; set; }
 
+        public DateTimeOffset DateSoftDeleted { get; set; }
+
         public bool IsPublic { get; set; }
     }
     public class Race
@@ -121,6 +123,8 @@ namespace ArmyBuilderSite.BloodBowlModels
         public bool IsActive { get; set; }
 
         public bool IsSoftDeleted { get; set; }
+
+        public DateTimeOffset DateSoftDeleted { get; set; }
 
         public string PlayerStatus { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using ArmyBuilderSite.BloodBowlModels;
 using ArmyBuilderSite.Data;
 using ArmyBuilderSite.Models.ViewModels.Bloodbowl;
+using ArmyBuilderSite.Services.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -127,6 +128,7 @@ namespace ArmyBuilderSite.Controllers
             }
 
             team.IsSoftDeleted = true;
+            team.DateSoftDeleted = DateTimeOffset.Now;
 
             try
             {
@@ -153,7 +155,33 @@ namespace ArmyBuilderSite.Controllers
                 return Json(new { error = "Please log in and reload page." });
             }
 
-            var teams = _db.Teams.Where(x => x.UserId == user.Id && !x.IsSoftDeleted).Include(x => x.Race).Select(x => new { x.Id, x.TeamName, x.ManagerName, race = x.Race.RaceName, button = "button" }).ToList();
+            var teams = _db.Teams.Where(x => x.UserId == user.Id && !x.IsSoftDeleted).Include(x => x.Race).Select(x => 
+                new { x.Id, 
+                        x.TeamName, 
+                        x.ManagerName, 
+                        race = x.Race.RaceName }).ToList();
+
+            return Json(new { data = teams });
+        }
+
+        [HttpGet]
+        [Route("/Bloodbowl/UserTeams/Deleted/Data")]
+        public ActionResult GetDeletedUserTeams()
+        {
+            var user = _db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefault();
+
+            if (user == null)
+            {
+                return Json(new { error = "Please log in and reload page." });
+            }
+
+            var teams = _db.Teams.Where(x => x.UserId == user.Id && x.IsSoftDeleted).Include(x => x.Race).Select(x => 
+            new { x.Id, 
+                    x.TeamName, 
+                    x.ManagerName, 
+                    race = x.Race.RaceName,
+                    DateDeleted = x.DateSoftDeleted.ToMomentString(),
+            }).ToList();
 
             return Json(new { data = teams });
         }

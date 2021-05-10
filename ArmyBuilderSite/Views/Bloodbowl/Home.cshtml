@@ -4,7 +4,8 @@
 </div>
 <div>
     <h1 class="text-center">Team Manager</h1>
-    <button class="btn btn-lg btn-dark" id="addTeamBtn" data-bs-toggle="modal" data-bs-target="#createEditTeamModal">Add New Team</button>
+    <button class="btn btn-lg btn-dark" id="addTeamBtn" data-bs-toggle="modal" data-bs-target="#createEditTeamModal"><i class="far fa-plus-square"></i> Add New Team</button>
+    <button class="btn btn-lg btn-dark" id="teamRecycleBinBtn" data-bs-toggle="modal" data-bs-target="#recycleTeamModal"><i class="fas fa-recycle"></i>  <i class="fas fa-trash"></i></button>
     <hr />
     <table id="teamsTable" class="display" style="width:100%">
         <thead>
@@ -22,6 +23,7 @@
         @Html.AntiForgeryToken()
     </form>
 </div>
+<partial name="../../Views/BloodBowl/PartialViews/_TeamRecycleBinPartial.cshtml" />
 
 <!-- Modal -->
 <div class="modal fade" id="createEditTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createEditTeamModalLabel" aria-hidden="true">
@@ -36,7 +38,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="closeCeateEditModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="createEditSubmitBtn" disabled>@Model.ModalVM.ButtonText</button>
+                <button type="button" class="btn btn-dark" id="createEditSubmitBtn" disabled>@Model.ModalVM.ButtonText</button>
             </div>
         </div>
     </div>

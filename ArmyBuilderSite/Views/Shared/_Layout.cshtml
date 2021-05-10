@@ -14,6 +14,8 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="//cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
     <script src="https://kit.fontawesome.com/d04bf0148a.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/datetime-moment.js"></script>
 </head>
 <body>
     @*<header>
@@ -77,3 +79,8 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+<script>
+    $.fn.dataTable.moment('DD/MM/YYYY HH:mm');
+    $.fn.dataTable.moment('DD/MM/YYYY HH:mm:ss');
+</script>
