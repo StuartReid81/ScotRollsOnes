@@ -85,6 +85,12 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public virtual List<RaceBasicPlayer> BasePlayers { get; set; }
 
+        public TeamTier Tier { get; set; }
+
+        public bool ApothecaryAllowed { get; set; }
+
+        public virtual List<RaceSpecialRule> SpecialRules { get; set; }
+
     }
     public class RaceBasicPlayer
     {
@@ -108,9 +114,10 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public int Agility { get; set; }
 
-        public virtual List<PlayerSkill> StartingSkills { get; set; }
+        public virtual List<StartingPlayerSkill> StartingSkills { get; set; }
 
         public int MaximumAllowed { get; set; }
+
     }
     public class Player
     {
@@ -147,7 +154,7 @@ namespace ArmyBuilderSite.BloodBowlModels
         public virtual List<PlayerModifier> Modifiers { get; set; }
     }
 
-    #region player many to many tables
+    #region many to many tables
     public class PlayerSkill {
         [Key]
         public int Id { get; set; }
@@ -164,6 +171,37 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public DateTimeOffset DateAdded { get; set; }
     }
+
+    public class StartingPlayerSkill
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public int BasePlayerId { get; set; }
+
+        [ForeignKey("BasePlayerId")]
+        public virtual RaceBasicPlayer Player { get; set; }
+
+        public int SkillId { get; set; }
+
+        [ForeignKey("SkillId")]
+        public virtual Skill Skill { get; set; }
+    }
+
+    public class PlayerSkillGroups {
+        [Key]
+        public int Id { get; set; }
+
+        public int BasePlayerId { get; set; }
+
+        [ForeignKey("BasePlayerId")]
+        public RaceBasicPlayer Player { get; set; }
+
+        public SkillGroup SkillGroup { get; set; }
+
+        public bool Primary { get; set; }
+    }
+
     public class PlayerInjury
     {
         [Key]
@@ -181,6 +219,7 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public DateTimeOffset DateAdded { get; set; }
     } 
+
     public class PlayerModifier
     {
         [Key]
@@ -198,6 +237,22 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public DateTimeOffset DateAdded { get; set; }
     }
+
+    public class RaceSpecialRule { 
+        [Key]
+        public int Id { get; set; }
+
+        public int RaceId { get; set; }
+
+        [ForeignKey("RaceId")]
+        public virtual Race Race { get; set; }
+
+        public int SpecialRuleId { get; set; }
+
+        [ForeignKey("SpecialRuleId")]
+        public SpecialRule SpecialRule { get; set; }
+    }
+
     #endregion
 
     //skill and stat mofdifier table
@@ -210,8 +265,11 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public string Effect { get; set; }
 
+        public SkillGroup SkillGroup { get; set; }
+
         public Modifier Modifier { get; set; }
     }
+
     public class SkillModifier
     {
         [Key]
@@ -241,6 +299,7 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public Modifier Modifier { get; set; }
     }
+
     public class InjuryModifier
     {
         [Key]
@@ -259,6 +318,17 @@ namespace ArmyBuilderSite.BloodBowlModels
         public DateTimeOffset DateAdded { get; set; }
     }
 
+    public class SpecialRule
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public bool TeamSpecialRule { get; set; }
+
+        public string RuleName { get; set; }
+
+        public string Description { get; set; }
+    }
 
     //stat management
     public class Modifier {
@@ -276,6 +346,16 @@ namespace ArmyBuilderSite.BloodBowlModels
     /// Enum for player attributes
     /// </summary>
     public enum Attribute { Move, Strength, Armour_Value, Agility, ReRolls, Injury_Roll }
+
+    /// <summary>
+    /// Grouping for skills in to type
+    /// </summary>
+    public enum SkillGroup { General, Agility, Mutations, Passing, Strength, Trait }
+    
+    /// <summary>
+    /// Team difficulty value
+    /// </summary>
+    public enum TeamTier { One, Two, Three }
 
 
 }

@@ -40,6 +40,7 @@ namespace ArmyBuilderSite.Controllers
 
 
         public void SeedDatabase() {
+            #region Race Seed
             var races = new List<Race>();
 
             races.Add(new Race() { RaceName = "Humans", Description = "Humanities finest players", ReRollCost = 50000 });
@@ -48,17 +49,43 @@ namespace ArmyBuilderSite.Controllers
 
             var dbRaces = _db.Races.ToList();
 
-            var toSeed = new List<Race>();
+            var racesToSeed = new List<Race>();
 
             foreach (var race in races)
             {
                 if (!dbRaces.Where(x=> x.RaceName == race.RaceName).Any())
                 {
-                    toSeed.Add(race);
+                    racesToSeed.Add(race);
                 }
             }
 
-            _db.AddRange(toSeed);
+            _db.AddRange(racesToSeed);
+
+            #endregion
+
+            #region Skill Seed
+            var skills = new List<Skill>();
+
+            skills.Add(new Skill() { SkillName = "Pass", Effect = "This player may re-roll a failed Passing Ability test when performing a Pass action.", SkillGroup = SkillGroup.Passing });
+            skills.Add(new Skill() { SkillName = "Sure Hands", Effect = "This player may re-roll any failed attempt to pick up the ball. In addition, the Strip Ball skill cannot be used against a player with this Skill.", SkillGroup = SkillGroup.Agility });
+            skills.Add(new Skill() { SkillName = "Dodge", Effect = "Once per team turn, during their activation, this player may re - roll a failed Agility test when attempting to Dodge. Additionally, this player may choose to use this Skill when theyare the target of a Block action and a Stumble result is applied against them, as described on page 57.", SkillGroup = SkillGroup.Agility });
+            skills.Add(new Skill() { SkillName = "Block", Effect = "When a Both Down result is applied during a Block action, this player may choose to ignore it and not be Knocked Down, as described on page 5", SkillGroup = SkillGroup.General  });
+
+            var dbSkills = _db.Skills.ToList();
+
+            var skillsToSeed = new List<Skill>();
+
+            foreach (var skill in skills)
+            {
+                if (!dbSkills.Where(x => x.SkillName == skill.SkillName).Any())
+                {
+                    skillsToSeed.Add(skill);
+                }
+            }
+
+            _db.AddRange(skillsToSeed);
+
+            #endregion
 
             _db.SaveChanges();
         }
