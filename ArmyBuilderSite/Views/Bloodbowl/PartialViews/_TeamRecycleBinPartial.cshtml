@@ -47,7 +47,7 @@
             details: false
         },
         ajax: {
-            url: '../../Bloodbowl/UserTeams/Deleted/Data',
+            url: '../../../../../Bloodbowl/UserTeams/Deleted/Data',
             DataSrc: 'data'
         },
         columns: [
@@ -55,7 +55,7 @@
                 "data": null,
                 "defaultContent": '',
                 "render": (d) => {
-                    return `<a href="../../Bloodbowl/Team/View/${d.id}">${d.teamName}</a>`;
+                    return `<a href="../../../../Bloodbowl/Team/View/${d.id}">${d.teamName}</a>`;
                 }
             },
             { data: 'managerName' },
@@ -86,12 +86,16 @@
                 teamId: $(this).data("restore-team"),
                 __RequestVerificationToken: $('#restoreTeamForm input[name=__RequestVerificationToken]').val()
             };
-            $.post("../../bloodbowl/dorestoreteam", data, function (d) {
+            $.post("../../../../../bloodbowl/dorestoreteam", data, function (d) {
                 if (d.success) {
                     toastr.success("Team Restored.");
-                    tt.ajax.reload();
-                    recycleBinTable.ajax.reload();
-                    $("#recycleTeamModal").modal("hide");
+                    if (typeof tt !== "undefined") {
+                        tt.ajax.reload();
+                        recycleBinTable.ajax.reload();
+                        $("#recycleTeamModal").modal("hide");
+                    } else {
+                        window.location.reload();
+                    }
                 } else {
                     toastr.error(d.error);
                 }
@@ -104,7 +108,7 @@
                     teamId: $(this).data("hard-delete-team"),
                     __RequestVerificationToken: $('#hardDeleteTeamForm input[name=__RequestVerificationToken]').val()
                 };
-                $.post("../../bloodbowl/doharddeleteteam", data, function (d) {
+                $.post("../../../../../bloodbowl/doharddeleteteam", data, function (d) {
                     if (d.success) {
                         toastr.success("Team emptied from recycle bin.");
                         tt.ajax.reload();
@@ -122,7 +126,7 @@
                 data = {
                     __RequestVerificationToken: $('#hardDeleteAllMyTeamsForm input[name=__RequestVerificationToken]').val()
                 };
-                $.post("../../bloodbowl/doharddeleteallteams", data, function (d) {
+                $.post("../../../../../bloodbowl/doharddeleteallteams", data, function (d) {
                     if (d.success) {
                         toastr.success("Teams emptied from recycle bin.");
                         tt.ajax.reload();

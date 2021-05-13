@@ -28,6 +28,8 @@ namespace ArmyBuilderSite.Models.ViewModels.Bloodbowl
         public string Error { get; set; }
 
         public ViewTeamDataVM Team { get; set; }
+
+        public CreateEditTeamModalVM ModalVM { get; set; }
     }
 
     public class ViewTeamDataVM {
@@ -39,6 +41,8 @@ namespace ArmyBuilderSite.Models.ViewModels.Bloodbowl
         public string TeamName { get; set; }
 
         public string RaceName { get; set; }
+
+        public int RaceId { get; set; }
 
         public string SpecialRules { get; set; }
 

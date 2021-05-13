@@ -29,7 +29,7 @@ namespace ArmyBuilderSite.Controllers
 
             var races = _db.Races.Select(x => new SelectListItem() { Text = $"{x.RaceName}, {x.Description}.", Value = x.Id.ToString() }).ToList();
 
-            var modalVM = new CreateEditTeamModalVM() { Title = "Create A New Team", Races = races, ButtonText = "Create Team", URL = "../../BloodBowl/DoCreateTeam" };
+            var modalVM = new CreateEditTeamModalVM() { Title = "Create a new team", Races = races, ButtonText = "Create Team", URL = "../../../../BloodBowl/DoCreateTeam" };
 
             var vm = new BBUserHomeVM() { Teams = teams, ModalVM = modalVM };
 
@@ -64,7 +64,11 @@ namespace ArmyBuilderSite.Controllers
 
             sr = sr.Substring(0, sr.LastIndexOf(","));
 
-            var teamVM = new ViewTeamVM() { Error = error, Team = new ViewTeamDataVM() {
+            var races = _db.Races.Select(x => new SelectListItem() { Text = $"{x.RaceName}, {x.Description}.", Value = x.Id.ToString() }).ToList();
+
+            var modalVM = new CreateEditTeamModalVM() { Title = "Edit your team", Races = races, ButtonText = "Edit Team", URL = "../../../../BloodBowl/DoEditTeam" };
+
+            var teamVM = new ViewTeamVM() { Error = error, ModalVM = modalVM, Team = new ViewTeamDataVM() {
                 TeamName = team.TeamName, // in
                 ManagerName = team.ManagerName, // in
                 Gold = team.Gold, // in
@@ -86,6 +90,7 @@ namespace ArmyBuilderSite.Controllers
                 League = team.League,
                 LeaguePoints = team.LeaguePoints,
                 Losses = team.Losses,
+                RaceId = team.RaceId,
                 RaceName = team.Race.RaceName, //in
                 ReRolls = team.ReRolls,
                 TotalGamesPlayed = team.TotalGamesPlayed,
@@ -95,6 +100,7 @@ namespace ArmyBuilderSite.Controllers
                 SpecialRules = sr,
                 Tier = team.Race.Tier.ToString()
             } };
+
 
             return View("TeamPage", teamVM);
         }

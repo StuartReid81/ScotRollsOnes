@@ -37,3 +37,24 @@
         </div>
     </div>
 </form>
+
+<script>
+    function CheckValidInput() {
+        let di = $("[data-input='createEdit']");
+        let emptyCount = 0;
+        for (var i = 0; i < di.length; i++) {
+            if (di[i].value == "") {
+                emptyCount++;
+                $(`#${di[i].id}Validate`).show();
+            } else {
+                $(`#${di[i].id}Validate`).hide();
+            }
+        }
+
+        if (emptyCount > 0) {
+            $("#createEditSubmitBtn").attr("disabled", true);
+        } else {
+            $("#createEditSubmitBtn").attr("disabled", false);
+        }
+    }
+</script>
