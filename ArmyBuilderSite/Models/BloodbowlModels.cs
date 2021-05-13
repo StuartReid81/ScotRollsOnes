@@ -114,7 +114,11 @@ namespace ArmyBuilderSite.BloodBowlModels
 
         public int Agility { get; set; }
 
+        public int PassingAbility { get; set; }
+
         public virtual List<StartingPlayerSkill> StartingSkills { get; set; }
+
+        public virtual List<PlayerSkillGroups> AllowedSkills { get; set; }
 
         public int MaximumAllowed { get; set; }
 
@@ -138,6 +142,16 @@ namespace ArmyBuilderSite.BloodBowlModels
         public DateTimeOffset DateSoftDeleted { get; set; }
 
         public string PlayerStatus { get; set; }
+
+        public int Movement { get; set; }
+
+        public int ArmourValue { get; set; }
+
+        public int Strength { get; set; }
+
+        public int Agility { get; set; }
+
+        public int PassingAbility { get; set; }
 
         public DateTimeOffset DateHired { get; set; }
 

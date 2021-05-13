@@ -40,31 +40,39 @@ else
             <hr style="margin-top:1%" />
         </div>
         <div class="row text-center">
-            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
                 <h5>Manager Name:</h5>
                 <p>@Team.ManagerName</p>
             </div>
-            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
                 <h5>Race:</h5>
                 <p>@Team.RaceName</p>
             </div>
-            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
                 <h5>Date Created:</h5>
                 <p>@Team.DateCreated.ToSimpleDateString()</p>
             </div>
-        </div>
-        <div class="row text-center">
-            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
                 <h5>User Name:</h5>
                 <p>@Team.UserName</p>
             </div>
-            <div class="col-md-4 col-sm-12" style="margin-top:2%">
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Special Rules:</h5>
+                <p>@Team.SpecialRules</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Difficulty Tier:</h5>
+                <p>@Team.Tier</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
                 <h5>Number of Players:</h5>
                 <p>@Team.ActivePlayers active / @Team.TotalPlayers total</p>
             </div>
-            <div class="col-md-4 col-sm-12" style="margin-top:2%">
-                <h5>Date Created:</h5>
-                <p>@Team.DateCreated.ToSimpleDateString()</p>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Games Played:</h5>
+                <p>@Team.TotalGamesPlayed</p>
             </div>
         </div>
         <hr />
@@ -72,16 +80,18 @@ else
             <h3 class="team-roster">Player Roster</h3>
         </div>
         <div>
-            <table id="teamRosterTable" class="display" style="width:100%">
+            <table id="teamRosterTable" class="display responsive" style="width:100%">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Pos</th>
-                        <th>M</th>
-                        <th>S</th>
-                        <th>A</th>
-                        <th>Av</th>
-                        <th></th>
+                        <th data-priority="0">No.</th>
+                        <th data-priority="0">Name</th>
+                        <th data-priority="0">Pos</th>
+                        <th data-priority="1">M</th>
+                        <th data-priority="1">S</th>
+                        <th data-priority="1">A</th>
+                        <th data-priority="1">PA</th>
+                        <th data-priority="1">Av</th>
+                        <th data-priority="0"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -92,7 +102,13 @@ else
 }
 
 <script>
-    var rosterTable = $("#teamRosterTable").DataTable({ paging: false, "bFilter": false });
+    var rosterTable = $("#teamRosterTable").DataTable({
+        paging: false,
+        "bFilter": false,
+        "bInfo": false,
+        responsive: {
+            details: false
+        }, });
     $(document).ready(function () {
 
     });

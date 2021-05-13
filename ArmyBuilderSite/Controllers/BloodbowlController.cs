@@ -39,7 +39,7 @@ namespace ArmyBuilderSite.Controllers
         [HttpGet]
         [Route("/Bloodbowl/Team/View/{id}")]
         public IActionResult TeamPage(int id) {
-            var team = _db.Teams.Where(x => x.Id == id).Include(x => x.Race).Include(x => x.TeamRoster).FirstOrDefault();
+            var team = _db.Teams.Where(x => x.Id == id).Include(x => x.Race).ThenInclude(x => x.SpecialRules).ThenInclude(x => x.SpecialRule).Include(x => x.TeamRoster).FirstOrDefault();
 
             var error = "";
 
@@ -55,6 +55,15 @@ namespace ArmyBuilderSite.Controllers
                 }
             }
 
+            var sr = "";
+
+            foreach (var rule in team.Race.SpecialRules)
+            {
+                sr += $"{rule.SpecialRule.RuleName}, ";
+            }
+
+            sr = sr.Substring(0, sr.LastIndexOf(","));
+
             var teamVM = new ViewTeamVM() { Error = error, Team = new ViewTeamDataVM() {
                 TeamName = team.TeamName, // in
                 ManagerName = team.ManagerName, // in
@@ -64,7 +73,7 @@ namespace ArmyBuilderSite.Controllers
                 Apothecaries = team.Apothecaries,
                 AssistantCoaches = team.AssistantCoaches,
                 BeingCreated = team.BeingCreated, //in
-                CasualtiesInflicted = team.CasualtiesInflicted, 
+                CasualtiesInflicted = team.CasualtiesInflicted,
                 Cheerleaders = team.Cheerleaders,
                 CurrentTeamRoster = team.TeamRoster,
                 DateCreated = team.DateCreated, //in
@@ -82,7 +91,9 @@ namespace ArmyBuilderSite.Controllers
                 TotalGamesPlayed = team.TotalGamesPlayed,
                 TouchDowns = team.TouchDowns,
                 UserName = team.UserName, //in
-                Wins = team.Wins
+                Wins = team.Wins,
+                SpecialRules = sr,
+                Tier = team.Race.Tier.ToString()
             } };
 
             return View("TeamPage", teamVM);

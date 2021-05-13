@@ -40,6 +40,10 @@ namespace ArmyBuilderSite.Models.ViewModels.Bloodbowl
 
         public string RaceName { get; set; }
 
+        public string SpecialRules { get; set; }
+
+        public string Tier { get; set; }
+
         public int Gold { get; set; }
 
         public string ManagerName { get; set; }
