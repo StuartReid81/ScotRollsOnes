@@ -7,136 +7,139 @@
 
 @if (!string.IsNullOrWhiteSpace(Model.Error))
 {
-<h1>There was a problem loading this team.</h1>
-<h2 class="text-info">Error: @Model.Error</h2>
+    <h1>There was a problem loading this team.</h1>
+    <h2 class="text-info">Error: @Model.Error</h2>
 }
 else
 {
-<div class="container">
-    <div class="text-center">
-        <h1 class="team-name">@Team.TeamName</h1>
-        <h4>Current Treasury: @Team.Gold.ToString("N0")</h4>
+    <div class="container">
+        <div class="text-center">
+            <h1 class="team-name">@Team.TeamName</h1>
+            <h4>Current Treasury: @Team.Gold.ToString("N0")</h4>
+            <hr />
+        </div>
+        <div class="row text-center">
+            @if (Team.BeingCreated)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <h4><span class="badge bg-dark">Team Being Created</span></h4>
+                </div>
+            }
+            @if (Team.IsPublic)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <h4><span class="badge bg-success">Public Team</span></h4>
+                </div>
+            }
+            @if (Team.IsSoftDeleted)
+            {
+                <div class="col-md-4 col-sm-12">
+                    <h4><span class="badge bg-danger">Team In Recycle Bin</span></h4>
+                </div>
+            }
+            <hr style="margin-top:1%" />
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Manager Name:</h5>
+                <p>@Team.ManagerName</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Race:</h5>
+                <p>@Team.RaceName</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Date Created:</h5>
+                <p>@Team.DateCreated.ToSimpleDateString()</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>User Name:</h5>
+                <p>@Team.UserName</p>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Special Rules:</h5>
+                <p>@Team.SpecialRules</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Difficulty Tier:</h5>
+                <p>@Team.Tier</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Number of Players:</h5>
+                <p>@Team.ActivePlayers active / @Team.TotalPlayers total</p>
+            </div>
+            <div class="col-md-3 col-sm-12" style="margin-top:2%">
+                <h5>Games Played:</h5>
+                <p>@Team.TotalGamesPlayed</p>
+            </div>
+        </div>
         <hr />
-    </div>
-    <div class="row text-center">
-        @if (Team.BeingCreated)
+        <div class="text-center">
+            <h3 class="team-roster">Player Roster</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
+                <button class="btn btn-outline-dark" id="editTeamButton" data-bs-toggle="modal" data-bs-target="#createEditTeamModal">Edit Team</button>
+            </div>
+            @if (!Team.IsSoftDeleted)
             {
-        <div class="col-md-4 col-sm-12">
-            <h4><span class="badge bg-dark">Team Being Created</span></h4>
-        </div>
+                <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
+                    <button class="btn btn-outline-dark" id="deleteTeamButton">Delete Team</button>
+                </div>
             }
-        @if (Team.IsPublic)
+            else
             {
-        <div class="col-md-4 col-sm-12">
-            <h4><span class="badge bg-success">Public Team</span></h4>
-        </div>
+                <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
+                    <button class="btn btn-outline-dark" id="teamRecycleBinBtn" data-bs-toggle="modal" data-bs-target="#recycleTeamModal"><i class="fas fa-recycle"></i> Recycle Bin</button>
+                </div>
             }
-        @if (Team.IsSoftDeleted)
-            {
-        <div class="col-md-4 col-sm-12">
-            <h4><span class="badge bg-danger">Team In Recycle Bin</span></h4>
+            <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
+                <button class="btn btn-outline-dark">Add Player</button>
+            </div>
+            <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
+                <button class="btn btn-outline-dark">Hire Staff</button>
+            </div>
         </div>
-            }
-        <hr style="margin-top:1%" />
-    </div>
-    <div class="row text-center">
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Manager Name:</h5>
-            <p>@Team.ManagerName</p>
-        </div>
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Race:</h5>
-            <p>@Team.RaceName</p>
-        </div>
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Date Created:</h5>
-            <p>@Team.DateCreated.ToSimpleDateString()</p>
-        </div>
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>User Name:</h5>
-            <p>@Team.UserName</p>
+        <div>
+            <table id="teamRosterTable" class="display responsive" style="width:100%">
+                <thead>
+                    <tr>
+                        <th data-priority="0">No.</th>
+                        <th data-priority="0">Name</th>
+                        <th data-priority="0">Pos</th>
+                        <th data-priority="0">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
     </div>
-    <div class="row text-center">
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Special Rules:</h5>
-            <p>@Team.SpecialRules</p>
-        </div>
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Difficulty Tier:</h5>
-            <p>@Team.Tier</p>
-        </div>
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Number of Players:</h5>
-            <p>@Team.ActivePlayers active / @Team.TotalPlayers total</p>
-        </div>
-        <div class="col-md-3 col-sm-12" style="margin-top:2%">
-            <h5>Games Played:</h5>
-            <p>@Team.TotalGamesPlayed</p>
-        </div>
-    </div>
-    <hr />
-    <div class="text-center">
-        <h3 class="team-roster">Player Roster</h3>
-    </div>
-    <div class="row">
-        <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
-            <button class="btn btn-outline-dark" id="editTeamButton" data-bs-toggle="modal" data-bs-target="#createEditTeamModal">Edit Team</button>
-        </div>
-        @if (!Team.IsSoftDeleted) {
-        <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
-            <button class="btn btn-outline-dark" id="deleteTeamButton">Delete Team</button>
-        </div>
-        } else {
-        <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
-            <button class="btn btn-outline-dark" id="teamRecycleBinBtn" data-bs-toggle="modal" data-bs-target="#recycleTeamModal"><i class="fas fa-recycle"></i> Recycle Bin</button>
-        </div>
-        }
-        <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
-            <button class="btn btn-outline-dark">Add Player</button>
-        </div>
-        <div class="col-md-3 col-sm-12 d-flex justify-content-center" style="margin-top:2%">
-            <button class="btn btn-outline-dark">Hire Staff</button>
-        </div>
-    </div>
-    <div>
-        <table id="teamRosterTable" class="display responsive" style="width:100%">
-            <thead>
-                <tr>
-                    <th data-priority="0">No.</th>
-                    <th data-priority="0">Name</th>
-                    <th data-priority="0">Pos</th>
-                    <th data-priority="0">Details</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
-</div>
-<partial name="../../Views/BloodBowl/PartialViews/_TeamRecycleBinPartial.cshtml" />
-<form id="deleteTeamForm">
-    @Html.AntiForgeryToken()
-</form>
+    <partial name="../../Views/BloodBowl/PartialViews/_TeamRecycleBinPartial.cshtml" />
+    <form id="deleteTeamForm">
+        @Html.AntiForgeryToken()
+    </form>
 
-<!--Edit Team Modal-->
-<div class="modal fade" id="createEditTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createEditTeamModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createEditTeamModalLabel">@Model.ModalVM.Title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <partial name="../../Views/BloodBowl/PartialViews/_CreateEditTeamPartial.cshtml" model="Model.ModalVM" />
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="closeCeateEditModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-dark" id="createEditSubmitBtn" disabled>@Model.ModalVM.ButtonText</button>
+    <!--Edit Team Modal-->
+    <div class="modal fade" id="createEditTeamModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createEditTeamModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditTeamModalLabel">@Model.ModalVM.Title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <partial name="../../Views/BloodBowl/PartialViews/_CreateEditTeamPartial.cshtml" model="Model.ModalVM" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeCeateEditModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-dark" id="createEditSubmitBtn" disabled>@Model.ModalVM.ButtonText</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 }
 
 <script>
@@ -177,8 +180,33 @@ else
             $('#inputCreateEditManagerName').val('@Team.ManagerName');
             $('#raceSelectInput').val('@Team.RaceId');
             $('#raceSelectInput').val('@Team.RaceId');
-            $('#publicTeamCheck').prop('checked', '@Team.IsPublic')
+            $('#publicTeamCheck').prop('checked', ('@Team.IsPublic' == 'True'))
             CheckValidInput();
         });
+
+        $("#createEditSubmitBtn").click("click", DoSubmitCreateEdit);
     });
+
+    function DoSubmitCreateEdit() {
+        let URL = '@Model.ModalVM.URL';
+
+        let data = {
+            teamId: '@Team.Id',
+            teamName: $("#inputCreateEditTeamName").val(),
+            managerName: $("#inputCreateEditManagerName").val(),
+            race: $('#raceSelectInput').val(),
+            public: $('#publicTeamCheck').prop('checked'),
+            __RequestVerificationToken: $('#createEditTeamForm input[name=__RequestVerificationToken]').val()
+        }
+
+        $.post(URL, data, function (d) {
+            if (d.success) {
+                window.location.reload();
+            } else {
+                toastr.error(d.error);
+                console.log(d.ex);
+            }
+            
+        });
+    }
 </script>

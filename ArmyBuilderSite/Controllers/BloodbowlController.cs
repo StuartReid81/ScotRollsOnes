@@ -323,7 +323,7 @@ namespace ArmyBuilderSite.Controllers
 
             if (team.TeamName == dto.TeamName && team.ManagerName == dto.ManagerName && team.RaceId == race.Id && team.IsPublic == dto.Public)
             {
-                return Json(new { Success = false, Error = "There were no changed detected." });
+                return Json(new { Success = false, Error = "There were no changes detected." });
             }
 
             team.TeamName = dto.TeamName;
@@ -334,6 +334,7 @@ namespace ArmyBuilderSite.Controllers
             try
             {
                 _db.SaveChanges();
+                TempData["Success"] = "Team updated.";
                 return Json(new { Success = true });
             }
             catch (Exception ex)
