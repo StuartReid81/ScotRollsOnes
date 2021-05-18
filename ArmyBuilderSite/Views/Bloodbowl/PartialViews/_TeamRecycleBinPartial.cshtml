@@ -108,12 +108,19 @@
                     teamId: $(this).data("hard-delete-team"),
                     __RequestVerificationToken: $('#hardDeleteTeamForm input[name=__RequestVerificationToken]').val()
                 };
+                if (typeof tt === "undefined") {
+                    data.fromTeamPage = true;   
+                }
                 $.post("../../../../../bloodbowl/doharddeleteteam", data, function (d) {
                     if (d.success) {
                         toastr.success("Team emptied from recycle bin.");
-                        tt.ajax.reload();
-                        recycleBinTable.ajax.reload();
-                        $("#recycleTeamModal").modal("hide");
+                        if (typeof tt !== "undefined") {
+                            tt.ajax.reload();
+                            recycleBinTable.ajax.reload();
+                            $("#recycleTeamModal").modal("hide");
+                        } else {
+                            window.location.replace("../../../bloodbowl/home");
+                        }
                     } else {
                         toastr.error(d.error);
                     }
@@ -126,12 +133,19 @@
                 data = {
                     __RequestVerificationToken: $('#hardDeleteAllMyTeamsForm input[name=__RequestVerificationToken]').val()
                 };
+                if (typeof tt === "undefined") {
+                    data.fromTeamPage = true;
+                }
                 $.post("../../../../../bloodbowl/doharddeleteallteams", data, function (d) {
                     if (d.success) {
                         toastr.success("Teams emptied from recycle bin.");
-                        tt.ajax.reload();
-                        recycleBinTable.ajax.reload();
-                        $("#recycleTeamModal").modal("hide");
+                        if (typeof tt !== "undefined") {
+                            tt.ajax.reload();
+                            recycleBinTable.ajax.reload();
+                            $("#recycleTeamModal").modal("hide");
+                        } else {
+                            window.location.replace("../../../bloodbowl/home");
+                        }
                     } else {
                         toastr.error(d.error);
                     }

@@ -2,6 +2,7 @@
 using ArmyBuilderSite.Data;
 using ArmyBuilderSite.Models.ViewModels.Bloodbowl;
 using ArmyBuilderSite.Services.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ArmyBuilderSite.Controllers
 {
+    [Authorize]
     public class BloodbowlController : Controller
     {
         public ApplicationDbContext _db;
@@ -25,6 +27,10 @@ namespace ArmyBuilderSite.Controllers
 
         public IActionResult Home()
         {
+            if (TempData["Success"] != null)
+            {
+                ViewData["Success"] = TempData["Success"];
+            }
             var teams = _db.Teams.Where(x => x.UserName == User.Identity.Name && x.IsSoftDeleted != true).Include(x => x.Race).ToList();
 
             var races = _db.Races.Select(x => new SelectListItem() { Text = $"{x.RaceName}, {x.Description}.", Value = x.Id.ToString() }).ToList();
@@ -39,6 +45,11 @@ namespace ArmyBuilderSite.Controllers
         [HttpGet]
         [Route("/Bloodbowl/Team/View/{id}")]
         public IActionResult TeamPage(int id) {
+            if (TempData["Success"] != null)
+            {
+                ViewData["Success"] = TempData["Success"];
+            }
+
             var team = _db.Teams.Where(x => x.Id == id).Include(x => x.Race).ThenInclude(x => x.SpecialRules).ThenInclude(x => x.SpecialRule).Include(x => x.TeamRoster).FirstOrDefault();
 
             var error = "";
@@ -249,6 +260,10 @@ namespace ArmyBuilderSite.Controllers
             {
                 _db.Remove(team);
                 _db.SaveChanges();
+                if (dto.FromTeamPage)
+                {
+                    TempData["Success"] = "Team emptied from recycle bin.";
+                }
                 return Json(new { Success = true });
             }
             catch (Exception)
@@ -259,7 +274,7 @@ namespace ArmyBuilderSite.Controllers
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public IActionResult DoHardDeleteAllTeams()
+        public IActionResult DoHardDeleteAllTeams(DoDeleteTeamDTO dto)
         {
             var teams = _db.Teams.Where(x => x.UserName == User.Identity.Name && x.IsSoftDeleted ).ToList();
 
@@ -272,11 +287,58 @@ namespace ArmyBuilderSite.Controllers
             {
                 _db.RemoveRange(teams);
                 _db.SaveChanges();
+                if (dto.FromTeamPage)
+                {
+                    TempData["Success"] = "All teams emptied from recycle bin.";
+                }
                 return Json(new { Success = true });
             }
             catch (Exception)
             {
                 return Json(new { Success = false, Error = "Unable to update the database." });
+            }
+        }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public IActionResult DoEditTeam(DoEditTeamDTO dto) {
+            var team = _db.Teams.Where(x => x.Id == dto.TeamId).FirstOrDefault();
+
+            if (team == null)
+            {
+                return Json(new { Success = false, Error = "Unable to find this team on the database." });
+            }
+
+            if (team.UserName != User.Identity.Name)
+            {
+                return Json(new { Success = false, Error = "This team does not belong to you." });
+            }
+
+            var race = _db.Races.Where(x => x.Id.ToString() == dto.Race).FirstOrDefault();
+
+            if (race == null)
+            {
+                return Json(new { Success = false, Error = "Unable to find this race in the database." });
+            }
+
+            if (team.TeamName == dto.TeamName && team.ManagerName == dto.ManagerName && team.RaceId == race.Id && team.IsPublic == dto.Public)
+            {
+                return Json(new { Success = false, Error = "There were no changed detected." });
+            }
+
+            team.TeamName = dto.TeamName;
+            team.ManagerName = dto.ManagerName;
+            team.IsPublic = dto.Public;
+            team.RaceId = race.Id;
+
+            try
+            {
+                _db.SaveChanges();
+                return Json(new { Success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { Success = false, Error = "Unable to save changes on the database.", Ex = ex });
             }
         }
 
@@ -341,6 +403,20 @@ namespace ArmyBuilderSite.Controllers
 
         public class DoDeleteTeamDTO {
             public int TeamId { get; set; }
+
+            public bool FromTeamPage { get; set; }
+        }
+
+        public class DoEditTeamDTO {
+            public int TeamId { get; set; }
+
+            public string TeamName { get; set; }
+
+            public string ManagerName { get; set; }
+
+            public string Race { get; set; }
+
+            public bool Public { get; set; }
         }
         
         #endregion
