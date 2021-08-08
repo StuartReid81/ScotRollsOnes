@@ -1,7 +1,141 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ArmyBuilderSite.Models.ViewModels.DragonRampant.DRHomeVM
+<div>
+    <img class="img-fluid rounded mx-auto d-block" src="/Images/rampant.jpg" alt="Dragon Rampant Logo" />
+</div>
+<div>
+    <h1 class="text-center">Army Builder</h1>
+    <button class="btn btn-lg btn-dark" id="addArmyBtn" data-bs-toggle="modal" data-bs-target="#createEditArmyModal"><i class="far fa-plus-square"></i> Add New Army</button>
+    <button class="btn btn-lg btn-dark" id="armyRecycleBinBtn" data-bs-toggle="modal" data-bs-target="#recycleArmyModal"><i class="fas fa-recycle"></i>  <i class="fas fa-trash"></i></button>
+    <hr />
+    <table id="armyTable" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Army Name</th>
+                <th>Leader Name</th>
+                <th>Race</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <form id="softDeleteArmy">
+        @Html.AntiForgeryToken()
+    </form>
+</div>
+@*<partial name="../../Views/DragonRampant/PartialViews/_ArmyRecycleBinPartial.cshtml" />*@
 
-<h1 class="text-info">Dragon Rampant army builder - Coming Soon</h1>
+<!-- Modal -->
+<div class="modal fade" id="createEditArmyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createEditArmyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createEditArmyModalLabel">@Model.CreateEditVM.TitleText</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <partial name="../../Views/DragonRampant/PartialViews/_CreateEditArmyPartial.cshtml" model="Model.CreateEditVM" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeCeateEditModalBtn" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-dark" id="createEditSubmitBtn" disabled>@Model.CreateEditVM.ButtonText</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var tt = $('#armyTable').DataTable({
+        paging: false,
+        "language": {
+            "emptyTable": "You currently have no active armies."
+        },
+        ajax: {
+            url: '../../DragonRampant/UserArmies/Data',
+            DataSrc: 'data'
+        },
+        columns: [
+            {
+                "data": null,
+                "defaultContent": '',
+                "render": (d) => {
+                    return `<a href="../../DragonRampant/Army/View/${d.id}">${d.armyName}</a>`;
+                }
+            },
+            { data: 'leaderName' },
+            { data: 'race' },
+            {
+                "data": null,
+                defaultContent: '',
+                "orderable": false,
+                "render": (d) => {
+                    return `<button class="btn btn-sm" data-delete-army="${d.id}" data-delete-army-name="${d.armyName}"><i class="fas fa-trash-alt"></i> Delete Army</button>`;
+                }
+            }
+        ]
+    });
+
+    $(document).ready(function () {
+        $("#inputCreateEditArmyNameValidate").hide();
+        $("#inputCreateEditLeaderNameValidate").hide();
+
+        $('#recycleArmyModal').on('shown.bs.modal', function () {
+            var table = $('#armyRecycleBinTable').DataTable();
+            table.columns.adjust();
+        });
+
+        //on click
+        $("[data-input='createEdit']").change(CheckValidInput);
+
+        $('#armysTable tbody').on('click', '[data-delete-army]', function () {
+            if (confirm(`Are you sure you want to delete the following army? : ${$(this).data("delete-army-name")}`)) {
+                data = {
+                    armyId: $(this).data("delete-army"),
+                    __RequestVerificationToken: $('#softDeleteArmy input[name=__RequestVerificationToken]').val()
+                };
+                $.post("../../dragonrampant/dosoftdeletearmy", data, function (d) {
+                    if (d.success) {
+                        toastr.success("Army Deleted.");
+                        tt.ajax.reload();
+                        recycleBinTable.ajax.reload();
+                    } else {
+                        toastr.error(d.error);
+                    }
+                });
+            }
+        });
+
+        $("#createEditSubmitBtn").click("click", DoSubmitCreateEdit);
+    });
+
+    function DoSubmitCreateEdit() {
+        let URL = 'url';
+
+        let data = {
+            armyName: $("#inputCreateEditArmyName").val(),
+            managerName: $("#inputCreateEditLeaderName").val(),
+            public: $('#publicArmyCheck').prop('checked'),
+            __RequestVerificationToken: $('#createEditArmyForm input[name=__RequestVerificationToken]').val()
+        }
+
+        $.post(URL, data, function(d) {
+            if (d.success) {
+                $("#closeCeateEditModalBtn").trigger("click");
+                toastr.success("Army Created.");
+                ResetCreateArmyModal();
+                tt.ajax.reload();
+            } else {
+                toastr.error(d.error);
+                console.log(d.ex);
+            }
+        });
+    }
+
+    function ResetCreateArmyModal() {
+        $("#inputCreateEditArmyName").val("");
+        $("#inputCreateEditLeaderName").val("");
+        $('#publicArmyCheck').prop('checked', false);
+        $("#createEditSubmitBtn").attr("disabled", true);
+    }
+
+</script>

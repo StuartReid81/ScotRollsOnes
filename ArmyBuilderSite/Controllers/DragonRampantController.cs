@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ArmyBuilderSite.Models.ViewModels.DragonRampant;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace ArmyBuilderSite.Controllers
     {
         public IActionResult Home()
         {
-            return View();
+            var vm = new CreateEditArmyModalVM() { ButtonText = "Create Army", TitleText = "Create Your Army" };
+            return View(new DRHomeVM() { CreateEditVM = vm });
         }
     }
 }

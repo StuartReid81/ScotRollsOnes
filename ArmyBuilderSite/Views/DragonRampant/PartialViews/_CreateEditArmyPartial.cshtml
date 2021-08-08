@@ -1,0 +1,51 @@
+﻿@model ArmyBuilderSite.Models.ViewModels.DragonRampant.CreateEditArmyModalVM
+<form id="createEditArmyForm">
+    @Html.AntiForgeryToken()
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm">
+                <label for="createEditArmyName" class="form-label col-form-label-lg">Army Name</label>
+                <input type="text" class="form-control" id="inputCreateEditArmyName" data-input="createEdit" aria-describedby="armyNameHelp" name="armyName">
+                <span id="inputCreateEditArmyNameValidate" class="text-danger">The army must have a name.</span>
+            </div>
+            <div class="col-sm">
+                <label for="createEditLeaderName" class="form-label col-form-label-lg">Leader Name</label>
+                <input type="text" class="form-control" id="inputCreateEditLeaderName" data-input="createEdit" name="leaderName">
+                <span id="inputCreateEditLeaderNameValidate" class="text-danger">The leader must have a name.</span>
+            </div>
+        </div>
+        <div class="row">
+            <hr style="margin:20px" />
+            <div class="col-sm"></div>
+            <div class="col-sm">
+                <div class="form-check form-switch">
+                    <input class="form-check-input " type="checkbox" id="publicArmyCheck">
+                    <label class="form-check-label" for="publicTeamCheck">Do you want this army to be visible to other users?</label>
+                </div>
+            </div>
+            <div class="col-sm">
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    function CheckValidInput() {
+        let di = $("[data-input='createEdit']");
+        let emptyCount = 0;
+        for (var i = 0; i < di.length; i++) {
+            if (di[i].value == "") {
+                emptyCount++;
+                $(`#${di[i].id}Validate`).show();
+            } else {
+                $(`#${di[i].id}Validate`).hide();
+            }
+        }
+
+        if (emptyCount > 0) {
+            $("#createEditSubmitBtn").attr("disabled", true);
+        } else {
+            $("#createEditSubmitBtn").attr("disabled", false);
+        }
+    }
+</script>
