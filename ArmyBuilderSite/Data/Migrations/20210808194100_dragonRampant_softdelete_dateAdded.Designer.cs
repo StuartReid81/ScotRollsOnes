@@ -4,14 +4,16 @@ using ArmyBuilderSite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArmyBuilderSite.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210808194100_dragonRampant_softdelete_dateAdded")]
+    partial class dragonRampant_softdelete_dateAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -537,9 +539,6 @@ namespace ArmyBuilderSite.Data.Migrations
 
                     b.Property<DateTimeOffset>("DateSoftDeleted")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsSoftDeleted")
                         .HasColumnType("bit");

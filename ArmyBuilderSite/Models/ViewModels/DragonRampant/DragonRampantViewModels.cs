@@ -13,5 +13,6 @@ namespace ArmyBuilderSite.Models.ViewModels.DragonRampant
     public class CreateEditArmyModalVM {
         public string ButtonText { get; set; }
         public string TitleText { get; set; }
+        public string Url { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using ArmyBuilderSite.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ArmyBuilderSite.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210808193442_dragonRampant_Initial")]
+    partial class dragonRampant_Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -532,21 +534,6 @@ namespace ArmyBuilderSite.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTimeOffset>("DateAdded")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("DateSoftDeleted")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSoftDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LeaderName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -573,12 +560,6 @@ namespace ArmyBuilderSite.Data.Migrations
                     b.Property<int>("ArmyId")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("DateAdded")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("DateSoftDeleted")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<int>("FigureCount")
                         .HasColumnType("int");
 
@@ -589,9 +570,6 @@ namespace ArmyBuilderSite.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSingleFigure")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSoftDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

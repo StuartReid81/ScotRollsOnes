@@ -12,7 +12,7 @@
             <tr>
                 <th>Army Name</th>
                 <th>Leader Name</th>
-                <th>Race</th>
+                <th>Points</th>
                 <th></th>
             </tr>
         </thead>
@@ -59,11 +59,11 @@
                 "data": null,
                 "defaultContent": '',
                 "render": (d) => {
-                    return `<a href="../../DragonRampant/Army/View/${d.id}">${d.armyName}</a>`;
+                    return `<a href="../../DragonRampant/Army/View/${d.id}">${d.name}</a>`;
                 }
             },
             { data: 'leaderName' },
-            { data: 'race' },
+            { data: 'points' },
             {
                 "data": null,
                 defaultContent: '',
@@ -109,11 +109,11 @@
     });
 
     function DoSubmitCreateEdit() {
-        let URL = 'url';
+        let URL = '@Model.CreateEditVM.Url';
 
         let data = {
             armyName: $("#inputCreateEditArmyName").val(),
-            managerName: $("#inputCreateEditLeaderName").val(),
+            leaderName: $("#inputCreateEditLeaderName").val(),
             public: $('#publicArmyCheck').prop('checked'),
             __RequestVerificationToken: $('#createEditArmyForm input[name=__RequestVerificationToken]').val()
         }

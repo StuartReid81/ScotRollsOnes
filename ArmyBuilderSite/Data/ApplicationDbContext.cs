@@ -1,4 +1,5 @@
 ﻿using ArmyBuilderSite.BloodBowlModels;
+using ArmyBuilderSite.DragonRampantModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -33,6 +34,19 @@ namespace ArmyBuilderSite.Data
         public DbSet<SpecialRule> SpecialRules { get; set; }
 
         public DbSet<Modifier> Modifiers { get; set; }
+
+
+        /* DragonRampant */
+
+        public DbSet<Army> Armies { get; set; }
+        public DbSet<DRSpecialRule> DRSpecialRules { get; set; }
+        public DbSet<ArmyUnit> ArmyUnits { get; set; }
+        public DbSet<UnitType> UnitTypes { get; set; }
+        public DbSet<ChosenUnitOption> ChosenUnitOptions { get; set; }
+        public DbSet<UnitOption> UnitOptions { get; set; }
+        public DbSet<AvailableUnitOption> AvailabeUnitOptions { get; set; }
+
+
 
 
 
