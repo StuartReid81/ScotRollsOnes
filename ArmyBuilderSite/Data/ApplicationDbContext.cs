@@ -1,5 +1,6 @@
 ﻿using ArmyBuilderSite.BloodBowlModels;
 using ArmyBuilderSite.DragonRampantModels;
+using ArmyBuilderSite.FortyKCrusadeModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,6 +15,8 @@ namespace ArmyBuilderSite.Data
             : base(options)
         {
         }
+
+        /* BloodBowl */
 
         public DbSet<Team> Teams { get; set; }
         public DbSet<Race> Races { get; set; }
@@ -47,9 +50,10 @@ namespace ArmyBuilderSite.Data
         public DbSet<AvailableUnitOption> AvailabeUnitOptions { get; set; }
 
 
+        /* 40K Crusade */
 
-
-
+        public DbSet<CrusadeCard> CrusadeCards { get; set; }
+        public DbSet<CrusadeForce> CrusadeForces { get; set; }
 
 
 
